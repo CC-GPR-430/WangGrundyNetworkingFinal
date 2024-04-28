@@ -27,8 +27,8 @@ private:
 	const int PORT = 12345;
 	Address* address = nullptr;
 	Socket* listen_sock = nullptr;
+	bool isBothPlayersConnected = false;
 
-	
 	bool HandleConnection(Socket& conn_sock);
 	void ReadData(Socket& conn_sock);
 };
