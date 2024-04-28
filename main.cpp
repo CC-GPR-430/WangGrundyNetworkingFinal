@@ -12,10 +12,11 @@
 #include <defer.h>
 
 #include <SDL.h>
-#include <SDL_ttf.h>
+#include <SDL_ttf.h>s
 #include "GameObject.h"
 #include "Player.h"
 #include "Data.h"
+#include "Server.h"
 
 SDL_Rect rect;
 SDL_Renderer* renderer;
@@ -203,16 +204,31 @@ public:
     }
 };
 
-int RunProgram();
-int RunTests();
-
 int main(int argc, char* argv[]) {
     SockLibInit();
     atexit(SockLibShutdown);
 
     if (argc > 1) {
-        //return RunTests();
+        //run server
+        std::cout << "running server\n";
+
+        Server server;
+        server.Init();
+        server.RunServer();
+        
     }
+    else {
+        //run client
+        std::cout << "running client\n";
+
+        Player player;
+        player.Init();
+        std::cout << "sending message from client\n";
+        player.SendMessage("hello from client\n");
+    }
+
+    Player player;
+    player.Init();
 
     SDL_Init(SDL_INIT_EVERYTHING);
     if (TTF_Init() == -1) {
@@ -304,60 +320,6 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-int RunTests() {
-#define MSG messageHolder.GetCurrentMessage()
-    MessageHolder messageHolder;
-    float dt = 1 / 60.f;
-    messageHolder.Init();
-
-    pushch('a');
-    pushch('b');
-    pushch('c');
-    if (!MSG.empty()) {
-        puts("FAIL: Characters prematurely added to messageHolder.");
-        return 1;
-    }
-
-    messageHolder.Update(dt);
-    if (MSG != "abc") {
-        printf("FAIL: messageHolder contains %s but should have %s.\n", MSG.c_str(), "abc");
-        return 1;
-    }
-
-    messageHolder.Update(dt);
-    if (MSG != "abc") {
-        printf("FAIL: Two consecutive calls to Update() changed message from \"abc\" to "
-            "\"%s\". Message should stay the same if no new inputs occurred.\n",
-            MSG.c_str());
-        return 1;
-    }
-
-    pushch('\r');
-    messageHolder.Update(dt);
-    if (!MSG.empty()) {
-        puts("FAIL: 'enter' key did not clear message buffer");
-        return 1;
-    }
-
-    // Wait a little bit for the message to get back to us
-    SDL_Delay(100);
-    messageHolder.Update(dt);
-
-    int msgCount = 0;
-    for (const std::string& str : messageLog) {
-        if (!str.empty()) msgCount++;
-    }
-
-    if (msgCount != 2) {
-        printf("FAIL: %d messages in message queue, but should be 2\n", msgCount);
-        return 1;
-    }
-
-    puts("All tests passed!");
-    return 0;
-#undef MSG
-}
-
 static std::deque<char> typing_queue;
 
 void pushch(char c) {
@@ -381,11 +343,11 @@ void append_message(const std::string& msg, MessageSource src) {
 void StartRender() {
     SDL_Rect rect;
 
-    rect.x = 0;
-    rect.y = 0;
+    rect.x = 40;
+    rect.y = 40;
     rect.w = 500;
     rect.h = 500;
 
-    SDL_SetRenderDrawColor(renderer, 0, 1, 0, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, 0.4, 155, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, &rect);
 }
