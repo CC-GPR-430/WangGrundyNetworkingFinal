@@ -224,7 +224,7 @@ int main(int argc, char* argv[]) {
         Player player;
         player.Init();
         std::cout << "sending message from client\n";
-        player.SendMessage("hello from client\n");
+        //player.SendMessage("hello from client\n");
     }
 
     Player player;
@@ -302,6 +302,8 @@ int main(int argc, char* argv[]) {
         RenderText(renderer, font, fg, messageHolder.GetCurrentMessage(), 10, 480 - 26);
 
         //Render function here /////////////////////////////////////////
+        std::cout << "updating\n";
+        player.Update();
         StartRender();
 
         int penY = 0;

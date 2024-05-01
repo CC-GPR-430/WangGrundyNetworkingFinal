@@ -12,6 +12,8 @@ private:
     std::string userMessage;
     std::string userInput;
 
+    char msgBuffer[4096];
+
 public:
 
     void Init()
@@ -24,6 +26,10 @@ public:
 
         //bind address to socket
         (*sendSock).Connect(*address);
+
+        sendSock->SetNonBlockingMode(true);
+
+        SendMessage("ready");
     }
    
     void SendMessage(std::string messageInput) {
@@ -33,10 +39,38 @@ public:
 
         //Receive the server's response.
         char buffer[4096];
-        size_t nbytes_recved = (*sendSock).Recv(buffer, sizeof(buffer));
+        size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
 
-        //Create a std::string from the server's response and return it.
         std::string msgRecieved(buffer, nbytes_recved);
+    
+        if (msgRecieved.size() > 0) {
+            std::cout << msgRecieved << std::endl;
+        }
+    }
+
+    void Update() {
+        //set all to null
+        for (char c: msgBuffer) {
+            c = 0;
+        }
+
+        //std::cout << "client trying to recieve message...\n";
+        size_t nbytes_recved = sendSock->Recv(msgBuffer, sizeof(msgBuffer));
+
+        if (nbytes_recved == -1)
+        {
+            //std::cout << "Big error occured\n";
+            //perror("recv()");
+            std::cout << "error message\n";
+            return;
+        }
+
+        if (nbytes_recved == 0) {
+            std::cout << "No message\n";
+            return;
+        }
+        std::cout << "recieve message here???\n";
+        std::string msgRecieved(msgBuffer, nbytes_recved);
         std::cout << msgRecieved << std::endl;
     }
 };

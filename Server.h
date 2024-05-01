@@ -1,6 +1,7 @@
 #pragma once
 #include <socklib.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -29,6 +30,9 @@ private:
 	Socket* listen_sock = nullptr;
 	bool isBothPlayersConnected = false;
 
+	//vector<Socket*> connSocks;
+
 	bool HandleConnection(Socket& conn_sock);
 	void ReadData(Socket& conn_sock);
+	bool PlayerLobby(Socket& conn_sock);
 };
