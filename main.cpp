@@ -107,7 +107,7 @@ public:
         sock = new Socket(Socket::Family::INET, Socket::Type::STREAM);
 
         //bind address to socket
-        (*sock).Connect(*address);
+        sock->Connect(*address);
     }
 
     // Used for rendering
@@ -223,8 +223,6 @@ int main(int argc, char* argv[]) {
 
         Player player;
         player.Init();
-        std::cout << "sending message from client\n";
-        //player.SendMessage("hello from client\n");
     }
 
     Player player;
@@ -245,8 +243,6 @@ int main(int argc, char* argv[]) {
 
     MessageHolder messageHolder;
     messageHolder.Init();
-
-    puts("Initialized.");
 
     bool quit = false;
     while (!quit) {
@@ -302,7 +298,6 @@ int main(int argc, char* argv[]) {
         RenderText(renderer, font, fg, messageHolder.GetCurrentMessage(), 10, 480 - 26);
 
         //Render function here /////////////////////////////////////////
-        std::cout << "updating\n";
         player.Update();
         StartRender();
 

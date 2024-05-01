@@ -13,7 +13,7 @@ public:
 
 		//bind this socket to the provided host and port
 		address = new Address(HOST, PORT);
-		(*listen_sock).Bind(*address);
+		listen_sock->Bind(*address);
 	}
 
 	~Server() {
@@ -29,8 +29,6 @@ private:
 	Address* address = nullptr;
 	Socket* listen_sock = nullptr;
 	bool isBothPlayersConnected = false;
-
-	//vector<Socket*> connSocks;
 
 	bool HandleConnection(Socket& conn_sock);
 	void ReadData(Socket& conn_sock);

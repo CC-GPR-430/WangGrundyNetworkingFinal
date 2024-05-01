@@ -25,9 +25,9 @@ public:
         sendSock = new Socket(Socket::Family::INET, Socket::Type::STREAM);
 
         //bind address to socket
-        (*sendSock).Connect(*address);
+        sendSock->Connect(*address);
 
-        sendSock->SetNonBlockingMode(true);
+        //sendSock->SetNonBlockingMode(true);
 
         SendMessage("ready");
     }
@@ -35,42 +35,30 @@ public:
     void SendMessage(std::string messageInput) {
 
         //Send a properly - formatted sort string to the server.
-        size_t nbytes_sent = (*sendSock).Send(messageInput.data(), messageInput.size());
+        size_t nbytes_sent = sendSock->Send(messageInput.data(), messageInput.size());
 
         //Receive the server's response.
         char buffer[4096];
         size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
 
-        std::string msgRecieved(buffer, nbytes_recved);
-    
-        if (msgRecieved.size() > 0) {
-            std::cout << msgRecieved << std::endl;
+        if (nbytes_recved == -1 || nbytes_recved == 0) {
+            return;
         }
+
+        std::string msgRecieved(buffer, nbytes_recved);
+        std::cout << msgRecieved << std::endl;
     }
 
     void Update() {
-        //set all to null
-        for (char c: msgBuffer) {
-            c = 0;
-        }
+        char buffer[4096];
+        size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
 
-        //std::cout << "client trying to recieve message...\n";
-        size_t nbytes_recved = sendSock->Recv(msgBuffer, sizeof(msgBuffer));
-
-        if (nbytes_recved == -1)
-        {
-            //std::cout << "Big error occured\n";
-            //perror("recv()");
-            std::cout << "error message\n";
+        if (nbytes_recved == -1 || nbytes_recved == 0) {
             return;
         }
 
-        if (nbytes_recved == 0) {
-            std::cout << "No message\n";
-            return;
-        }
         std::cout << "recieve message here???\n";
-        std::string msgRecieved(msgBuffer, nbytes_recved);
+        std::string msgRecieved(buffer, nbytes_recved);
         std::cout << msgRecieved << std::endl;
     }
 };

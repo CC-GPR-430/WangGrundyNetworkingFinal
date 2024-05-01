@@ -13,8 +13,6 @@ void Server::RunServer() {
 
 		int playerCount = 0;
 		while (true) {
-			cout << "POOP!\n";
-
 			//keep accepting connections
 			std::cout << "Waiting for connection...\n";
 
@@ -22,16 +20,19 @@ void Server::RunServer() {
 
 				//accept any incoming messages
 				Socket s = listen_sock->Accept();
+				cout << "Accepted connection\n";
 
 				while (PlayerLobby(s)) {
-
+					/*std::string response = "SERVER HAS FUCKING FINALLY FOUND YOU!\n";
+					std::cout << "server sending connection message to player\n";
+					s.Send(response.data(), response.size());*/
 				}
 
-				while (true) {
+				/*while (true) {
 					std::cout << "sending message to player 1\n";
 					string tempS = "You are connected to WANG'S SERVER\n";
 					s.Send(tempS.data(), tempS.size());
-				}
+				}*/
 
 				//player1 = new Socket();
 				playerCount++;
@@ -126,21 +127,9 @@ bool Server::PlayerLobby(Socket& conn_sock)
 {
 	char buffer[4096];
 	int nbytes_recvd = conn_sock.Recv(buffer, sizeof(buffer));
-	// Must ALWAYS check for errors!
-	// nbytes_recvd == -1 iff an error occurred
-	if (nbytes_recvd == -1)
-	{
-		perror("recv()");
-		std::cout << "Big error occured\n";
-		return false;
-	}
 
-	// Next, check if client hung up connection.
-	// recv() returns 0 iff this is the case.
-	if (nbytes_recvd == 0)
+	if (nbytes_recvd == -1 || nbytes_recvd == 0)
 	{
-		// We're done talking to this client -- accept
-		// a new connection.
 		return false;
 	}
 
@@ -149,11 +138,33 @@ bool Server::PlayerLobby(Socket& conn_sock)
 	std::cout << "Received message '" << msg_str << "'\n";
 
 	std::string response = "SERVER HAS FUCKING FINALLY FOUND YOU!\n";
-	if (msg_str == "ready") {
+
+	/*while (true) {
+		std::cout << "server sending connection message to player\n";
+		conn_sock.Send(response.data(), response.size());
+	}*/
+
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
+
+	std::cout << "server sending connection message to player\n";
+	conn_sock.Send(response.data(), response.size());
+	
+	/*std::cout << "server sending connection message to player\n";
+	listen_sock->SendAll(response.data(), response.size());*/
+
+	/*if (msg_str == "ready") {
 		std::cout << "server sending connection message to player\n";
 		conn_sock.Send(response.data(), response.size());
 		std::cout << "nothing wrong with send\n";
-	}
+	}*/
 
 	// Successful back-and-forth -- ask caller to keep looping.
 	return true;
