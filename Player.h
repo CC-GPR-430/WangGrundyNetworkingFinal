@@ -62,6 +62,8 @@ public:
 
             size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
 
+            std::cout << "recving\n";
+
             if (nbytes_recved == -1 || nbytes_recved == 0) {
 
                 if (sendSock->GetLastError() == Socket::Error::SOCKLIB_ETIMEDOUT)
