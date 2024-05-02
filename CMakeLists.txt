@@ -7,7 +7,7 @@ configure_file(./assets/Carlito-Regular.ttf . COPYONLY)
 project(a6)
 
 add_executable(a6 "main.cpp" ${PROJECT_SOURCE_DIR}/simplesock/socklib_generic.cpp 
-"GameObject.h" "Server.cpp" "Server.h" "Player.h")
+"GameObject.h" "Server.cpp" "Server.h" "Player.h" "CONSTS.h")
 
 target_compile_features(a6 PRIVATE cxx_std_17)
 

@@ -1,4 +1,5 @@
 #pragma once
+#include "CONSTS.h"
 
 using namespace std;
 
@@ -50,15 +51,31 @@ public:
     }
 
     void Update() {
-        char buffer[4096];
-        size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
 
-        if (nbytes_recved == -1 || nbytes_recved == 0) {
-            return;
+        //wait a little
+        float wait_time = consts::INITIAL_TIMEOUT;
+
+        sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
+
+        while (true) {
+            char buffer[4096];
+
+            size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
+
+            if (nbytes_recved == -1 || nbytes_recved == 0) {
+
+                if (sendSock->GetLastError() == Socket::Error::SOCKLIB_ETIMEDOUT)
+                {
+                    std::cout << "Timed out. Maybe retrying...\n";
+                    sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
+                }
+                //return;
+                continue;
+            }
+
+            std::cout << "recieve message here???\n";
+            std::string msgRecieved(buffer, nbytes_recved);
+            std::cout << msgRecieved << std::endl;
         }
-
-        std::cout << "recieve message here???\n";
-        std::string msgRecieved(buffer, nbytes_recved);
-        std::cout << msgRecieved << std::endl;
     }
 };

@@ -137,7 +137,28 @@ bool Server::PlayerLobby(Socket& conn_sock)
 	std::string msg_str(buffer, nbytes_recvd);
 	std::cout << "Received message '" << msg_str << "'\n";
 
-	std::string response = "SERVER HAS FUCKING FINALLY FOUND YOU!\n";
+	std::string response = "SERVER HAS NOTICED YOU!\n";
+
+	float wait_time = consts::INITIAL_TIMEOUT;
+
+	//while (true) {
+	//	
+	//	conn_sock.SetTimeout(consts::INITIAL_TIMEOUT);
+	//	conn_sock.Send(response.data(), response.size());
+	//	
+	//	std::cout << "wait time maxed\n";
+	//	wait_time = consts::INITIAL_TIMEOUT;
+
+	//	/*if (wait_time >= consts::MAX_TIMEOUT) {
+	//		
+	//	}*/
+	//}
+
+	for (int i = 0; i < 10; i++) {
+		std::cout << "sending message to client\n";
+		conn_sock.Send(response.data(), response.size());
+	}
+	
 
 	/*while (true) {
 		std::cout << "server sending connection message to player\n";
