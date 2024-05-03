@@ -1,3 +1,13 @@
+#pragma once
+
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <time.h>
+#include <stdlib.h>
+
+#include "socklib.h"
+#include "defer.h"
 
 template <typename T>
 size_t copy_to_buffer(char* buffer, T* object, size_t buffer_size)

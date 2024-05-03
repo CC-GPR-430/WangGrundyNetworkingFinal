@@ -212,20 +212,19 @@ int main(int argc, char* argv[]) {
     SockLibInit();
     atexit(SockLibShutdown);
 
-    //if (argc > 1) {
-    //    //run server
-    //    std::cout << "running server\n";
+    if (argc > 1) {
+        //run server
+        std::cout << "running server\n";
 
-    //    Server server;
-    //    server.Init();
-    //    server.RunServer();
-    //    
-    //}
-    //else {
-    //    //run client
-    //    std::cout << "running client\n";
-    //    player.Init();
-    //}
+        Server server;
+        server.Init();
+        server.RunServer();
+    }
+    else {
+        //run client
+        std::cout << "running client\n";
+        player.Init();
+    }
 
     SDL_Init(SDL_INIT_EVERYTHING);
     if (TTF_Init() == -1) {
@@ -289,16 +288,11 @@ int main(int argc, char* argv[]) {
         }
 
         //Render function here /////////////////////////////////////////
-        //player.Update();
+        player.Update();
+
         PlayerInput();
         MovePlayer();
         GameRender();
-
-       /* int penY = 0;
-        for (const std::string& message : messageLog) {
-            RenderText(renderer, font, fg, message.c_str(), 0, penY);
-            penY += 18;
-        }*/
 
         last_frame = frame_start;
     }
@@ -350,12 +344,12 @@ void PlayerInput() {
     char lastKeyPress = getch();
 
     if (lastKeyPress == 'w') {
-        cout << "last key as W\n";
+        //cout << "last key as W\n";
         player.changeY = -1;
     }
 
     if (lastKeyPress == 's') {
-        cout << "last key as S\n";
+        //cout << "last key as S\n";
         player.changeY = 1;
     }
 
@@ -365,12 +359,12 @@ void PlayerInput() {
     }
 
     if (lastKeyPress == 'a') {
-        cout << "last key as A\n";
+        //cout << "last key as A\n";
         player.changeX = -1;
     }
 
     if (lastKeyPress == 'd') {
-        cout << "last key as D\n";
+        //cout << "last key as D\n";
         player.changeX = 1;
     }
 

@@ -34,4 +34,6 @@ private:
 	bool HandleConnection(Socket& conn_sock);
 	void ReadData(Socket& conn_sock);
 	bool PlayerLobby(Socket& conn_sock);
+	bool TryRecv(Socket& conn_sock);
+	bool TrySend(Socket& conn_sock);
 };

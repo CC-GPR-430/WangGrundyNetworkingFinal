@@ -1,5 +1,6 @@
 #pragma once
 #include "CONSTS.h"
+#include "Data.h"
 
 using namespace std;
 
@@ -68,32 +69,35 @@ public:
 
     void Update() {
 
-        //wait a slittle
-        float wait_time = consts::INITIAL_TIMEOUT;
+        TrySend();
+        
+        TryRecv();
+    }
 
+    void TryRecv() {
+        //wait a little
+        float wait_time = consts::INITIAL_TIMEOUT;
         //sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
 
-        while (true) {
-            char buffer[4096];
+        char buffer[4096];
+        size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
 
-            size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
+        if (nbytes_recved == -1 || nbytes_recved == 0) {
 
-            std::cout << "recving\n";
-
-            if (nbytes_recved == -1 || nbytes_recved == 0) {
-
-               /* if (sendSock->GetLastError() == Socket::Error::SOCKLIB_ETIMEDOUT)
-                {
-                    std::cout << "Timed out. Maybe retrying...\n";
-                    sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
-                }*/
-                return;
-                //continue; // loop forever...
-            }
-
-            std::cout << "recieve message here???\n";
-            std::string msgRecieved(buffer, nbytes_recved);
-            std::cout << msgRecieved << std::endl;
+            /* if (sendSock->GetLastError() == Socket::Error::SOCKLIB_ETIMEDOUT)
+            {
+                std::cout << "Timed out. Maybe retrying...\n";
+                sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
+            }*/
+            return;
         }
+
+        std::string msgRecieved(buffer, nbytes_recved);
+        std::cout << msgRecieved << std::endl;
+    }
+
+    void TrySend() {
+        string msg = "liam is a bitch 2024 \n";
+        size_t nbytes_recved = sendSock->Send(msg.data(), msg.size());
     }
 };
