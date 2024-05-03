@@ -35,11 +35,11 @@ private:
 
 	Player serverPlayer;
 
-	bool HandleConnection(Socket& conn_sock);
 	void ReadData(Socket& conn_sock);
 	bool PlayerLobby(Socket& conn_sock);
 	bool TryRecv(Socket& conn_sock);
 	bool TrySend(Socket& conn_sock);
+    bool IDCHECK(Socket& conn_sock);
 
 	//
 
@@ -86,6 +86,19 @@ private:
 
     size_t DeserializeGameObjectAsBytes(Player* go, char* buffer, size_t buffer_size)
     {
+        int id = -1;
+
+        //check ID
+        copy_from_buffer(&buffer[0], &id, buffer_size - sizeof(int));
+        
+        if (isIDValid(id)) {
+            std::cout << "ID WAS VALID [ " << id << " ]\n";
+        }
+        else {
+            std::cout << "ID WAS INVALID [ " << id << " ]\n";
+            return -1;
+        }
+
         size_t bytes_read = 0;
 
         bytes_read += copy_from_buffer(&buffer[bytes_read], &go->position.x, buffer_size - bytes_read);
@@ -93,4 +106,38 @@ private:
 
         return bytes_read;
     }
+
+    bool isIDValid(int id) {
+
+        //ID stayed invalid
+        if (id == -1) {
+            return false;
+        }
+
+        //id is just wrong
+        if (id != 0 && id !=1 && id != 2) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //// Second option: Serialize as binary
+    //size_t SerializeGameObjectAsBytes(const Player* go, char* buffer, size_t buffer_size)
+    //{
+    //    size_t bytes_written = 0;
+    //    bytes_written += copy_to_buffer(&buffer[bytes_written], &go->position.x, buffer_size - bytes_written);
+    //    bytes_written += copy_to_buffer(&buffer[bytes_written], &go->position.y, buffer_size - bytes_written);
+    //    return bytes_written;
+    //}
+
+    //size_t DeserializeGameObjectAsBytes(Player* go, char* buffer, size_t buffer_size)
+    //{
+    //    size_t bytes_read = 0;
+
+    //    bytes_read += copy_from_buffer(&buffer[bytes_read], &go->position.x, buffer_size - bytes_read);
+    //    bytes_read += copy_from_buffer(&buffer[bytes_read], &go->position.y, buffer_size - bytes_read);
+
+    //    return bytes_read;
+    //}
 };

@@ -289,6 +289,8 @@ int main(int argc, char* argv[]) {
 
         //Render function here /////////////////////////////////////////
         player.Update();
+#
+        //std::cout << "player ID:" << player.ID << std::endl;
 
         PlayerInput();
         MovePlayer();

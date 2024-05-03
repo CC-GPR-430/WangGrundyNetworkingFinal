@@ -23,7 +23,8 @@ void Server::RunServer() {
 
 				playerCount++;
 
-				std::string asd = "HELLO PLAYER 1\n";
+				std::string asd = "HELLO PLAYER 1!";
+				cout << "setting player 1 ID\n";
 				player1->Send(asd.data(), asd.size());
 			}
 			else {
@@ -32,7 +33,8 @@ void Server::RunServer() {
 
 				playerCount++;
 
-				std::string asd = "HELLO PLAYER 2\n";
+				std::string asd = "HELLO PLAYER 2!";
+				cout << "setting player 2 ID\n";
 				player2->Send(asd.data(), asd.size());
 			}
 
@@ -42,6 +44,37 @@ void Server::RunServer() {
 			}
 			std::cout << "player joined \n";
 		}
+
+		//check if IDs sent
+		bool p1ID = false;
+		bool p2ID = false;
+		bool lockP1 = false;
+		bool lockP2 = false;
+
+		while (true) {
+			if (!lockP1) {
+				p1ID = IDCHECK(*player1);
+			}
+			
+			if (p1ID) {
+				lockP1 = true;
+			}
+
+			if (!lockP2) {
+				p2ID = IDCHECK(*player2);
+			}
+			
+			if (p2ID) {
+				lockP1 = true;
+			}
+
+			//break if both set
+			if (p1ID && p2ID) {
+				std::cout << "ID's CONFIRMED 100%\n";
+				break;
+			}
+		}
+		
 		
 		//send a message to let the player know they are connected
 		string tempS = "You are connected to WANG'S SERVER\n";
@@ -138,6 +171,34 @@ bool Server::TrySend(Socket& conn_sock)
 	conn_sock.Send(str.data(), str.size());
 
 	return true; // continue
+}
+
+bool Server::IDCHECK(Socket& conn_sock)
+{
+	char buffer[4096];
+	int nbytes_recvd = conn_sock.Recv(buffer, sizeof(buffer));
+
+	if (nbytes_recvd == -1 || nbytes_recvd == 0)
+	{
+		return false;
+	}
+
+	// If we made it here, nbyte_recvd > 0.
+	std::string msg_str(buffer, nbytes_recvd);
+	std::cout << "Received message '" << msg_str << "'\n";
+
+	std::string msg = "ID_OBTAINED\n";
+
+	if (msg_str == "P1_ID_OBTAINED") {
+		conn_sock.Send(msg.data(), msg.size());
+		return true;
+	}
+	else if (msg_str == "P1_ID_OBTAINED") {
+		conn_sock.Send(msg.data(), msg.size());
+		return true;
+	}
+
+	return false;
 }
 
 //bool Server::TryRecv(Socket& conn_sock)

@@ -32,6 +32,7 @@ private:
     char msgBuffer[4096];
     
 public:
+    int ID = -1;
     float changeX, changeY, changeZ;
     Position position;
     float moveSpeed;
@@ -83,7 +84,11 @@ public:
         TryRecv();
     }
 
-    void TryRecv() {
+    void TryRecv() { 
+
+        //GATHER ID FIRST
+        IsGatherID_BlockAfter();
+
         //wait a little
         float wait_time = consts::INITIAL_TIMEOUT;
         //sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
@@ -106,12 +111,45 @@ public:
     }
 
     void TrySend() {
-        string msg = "liam is a bitch 2024 \n";
-        //size_t nbytes_recved = sendSock->Send(msg.data(), msg.size());
-        char buffer[4092];
-        SerializeGameObjectAsBytes(this, buffer, sizeof(buffer));
-        
-        sendSock->Send(buffer, msg.size());
+        if (ID == -1) {
+            return;
+        }
+
+        //char buffer[4092];
+        //SerializeGameObjectAsBytes(this, buffer, sizeof(buffer));
+        //sendSock->Send(buffer, sizeof(buffer));
+    }
+
+    bool IsGatherID_BlockAfter() {
+
+        //return true if we still want to gather ID
+
+        if (ID != -1) {
+            return false;
+        }
+
+        char buffer[4096];
+        size_t nbytes_recved = sendSock->Recv(buffer, sizeof(buffer));
+
+        if (nbytes_recved == -1 || nbytes_recved == 0) {
+            return true;
+        }
+
+        std::string msgRecieved(buffer, nbytes_recved);
+        std::cout << msgRecieved << std::endl;
+
+        if (msgRecieved == "HELLO PLAYER 1!") {
+            ID = 0;
+            std::cout << "ID SET!\n";
+            return false;
+        }
+        else if (msgRecieved == "HELLO PLAYER 2!") {
+            ID = 1;
+            std::cout << "ID SET!\n";
+            return false;
+        }
+
+        return true;
     }
 
     //////////////
@@ -151,6 +189,7 @@ public:
     size_t SerializeGameObjectAsBytes(const Player* go, char* buffer, size_t buffer_size)
     {
         size_t bytes_written = 0;
+        bytes_written += copy_to_buffer(&buffer[bytes_written], &go->ID, buffer_size - bytes_written);
         bytes_written += copy_to_buffer(&buffer[bytes_written], &go->position.x, buffer_size - bytes_written);
         bytes_written += copy_to_buffer(&buffer[bytes_written], &go->position.y, buffer_size - bytes_written);
         return bytes_written;
@@ -160,6 +199,7 @@ public:
     {
         size_t bytes_read = 0;
 
+        bytes_read += copy_from_buffer(&buffer[bytes_read], &go->ID, buffer_size - bytes_read);
         bytes_read += copy_from_buffer(&buffer[bytes_read], &go->position.x, buffer_size - bytes_read);
         bytes_read += copy_from_buffer(&buffer[bytes_read], &go->position.y, buffer_size - bytes_read);
 
