@@ -106,7 +106,7 @@ public:
     }
 
     void TrySend() {
-        string msg = "liam is a bitch 2024 \n";
+        string msg = "From Player\n";
         //size_t nbytes_recved = sendSock->Send(msg.data(), msg.size());
         char buffer[4092];
         SerializeGameObjectAsBytes(this, buffer, sizeof(buffer));
