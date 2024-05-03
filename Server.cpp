@@ -122,9 +122,9 @@ bool Server::TryRecv(Socket& conn_sock)
 		return false;
 	}
 
-	// If we made it here, nbyte_recvd > 0.
-	std::string msg_str(buffer, nbytes_recvd);
-	std::cout << "Received message '" << msg_str << "'\n";
+	DeserializeGameObjectAsBytes(&serverPlayer ,buffer, sizeof(buffer));
+
+	std::cout << "Player X = '" << serverPlayer.position.x << "'\n";
 
 	ReadData(conn_sock);
 
@@ -139,3 +139,23 @@ bool Server::TrySend(Socket& conn_sock)
 
 	return true; // continue
 }
+
+//bool Server::TryRecv(Socket& conn_sock)
+//{
+//	char buffer[4096];
+//	int nbytes_recvd = conn_sock.Recv(buffer, sizeof(buffer));
+//
+//	if (nbytes_recvd == -1 || nbytes_recvd == 0) //error check
+//	{
+//		return false;
+//	}
+//
+//	// If we made it here, nbyte_recvd > 0.
+//	std::string msg_str(buffer, nbytes_recvd);
+//	std::cout << "Received message '" << msg_str << "'\n";
+//
+//	ReadData(conn_sock);
+//
+//	// Successful back-and-forth -- ask caller to keep looping.
+//	return true;
+//}
