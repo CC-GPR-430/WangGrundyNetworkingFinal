@@ -334,7 +334,14 @@ void GameRender() {
     rect.w = 20;
     rect.h = 20;
 
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    //player 1
+    if (player.ID == 0) {
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    }
+    else if(player.ID == 1){ //p2
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    }
+   
     SDL_RenderFillRect(renderer, &rect);
 
     SDL_RenderPresent(renderer);
