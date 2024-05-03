@@ -3,6 +3,11 @@
 
 using namespace std;
 
+struct Position {
+    float x;
+    float y;
+};
+
 class Player {
 
 private:
@@ -15,7 +20,18 @@ private:
 
     char msgBuffer[4096];
 
+    
 public:
+    float changeX, changeY, changeZ;
+    Position position;
+    float moveSpeed;
+
+    Player() {
+        moveSpeed = 2;
+
+        position.x = 200;
+        position.y = 200;
+    }
 
     void Init()
     {
@@ -28,7 +44,7 @@ public:
         //bind address to socket
         sendSock->Connect(*address);
 
-        //sendSock->SetNonBlockingMode(true);
+        sendSock->SetNonBlockingMode(true);
 
         SendMessage("ready");
     }
@@ -52,10 +68,10 @@ public:
 
     void Update() {
 
-        //wait a little
+        //wait a slittle
         float wait_time = consts::INITIAL_TIMEOUT;
 
-        sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
+        //sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
 
         while (true) {
             char buffer[4096];
@@ -66,13 +82,13 @@ public:
 
             if (nbytes_recved == -1 || nbytes_recved == 0) {
 
-                if (sendSock->GetLastError() == Socket::Error::SOCKLIB_ETIMEDOUT)
+               /* if (sendSock->GetLastError() == Socket::Error::SOCKLIB_ETIMEDOUT)
                 {
                     std::cout << "Timed out. Maybe retrying...\n";
                     sendSock->SetTimeout(consts::INITIAL_TIMEOUT);
-                }
-                //return;
-                continue;
+                }*/
+                return;
+                //continue; // loop forever...
             }
 
             std::cout << "recieve message here???\n";

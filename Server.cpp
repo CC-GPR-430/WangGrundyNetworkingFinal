@@ -53,14 +53,6 @@ void Server::RunServer() {
 		
 		//send a message to let the player know they are connected
 
-		//THIS MESSAGE RETURNED AINT WORKINGGG
-		//THIS MESSAGE RETURNED AINT WORKINGGG
-		//THIS MESSAGE RETURNED AINT WORKINGGG
-		//THIS MESSAGE RETURNED AINT WORKINGGG
-		//THIS MESSAGE RETURNED AINT WORKINGGG
-		//THIS MESSAGE RETURNED AINT WORKINGGG
-		//THIS MESSAGE RETURNED AINT WORKINGGG
-
 		/*while (true) {
 			string tempS = "You are connected to WANG'S SERVER\n";
 			player1->Send(tempS.data(), tempS.size());
@@ -141,51 +133,17 @@ bool Server::PlayerLobby(Socket& conn_sock)
 
 	float wait_time = consts::INITIAL_TIMEOUT;
 
-	//while (true) {
-	//	
-	//	conn_sock.SetTimeout(consts::INITIAL_TIMEOUT);
-	//	conn_sock.Send(response.data(), response.size());
-	//	
-	//	std::cout << "wait time maxed\n";
-	//	wait_time = consts::INITIAL_TIMEOUT;
-
-	//	/*if (wait_time >= consts::MAX_TIMEOUT) {
-	//		
-	//	}*/
-	//}
 
 	for (int i = 0; i < 10; i++) {
 		std::cout << "sending message to client\n";
 		conn_sock.Send(response.data(), response.size());
 	}
 	
-
-	/*while (true) {
-		std::cout << "server sending connection message to player\n";
-		conn_sock.Send(response.data(), response.size());
-	}*/
-
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-	//EVEN WHEN THIS IS IN A WHILE LOOp, IT ONLY SENDS 1, IDK WHY?
-
-	std::cout << "server sending connection message to player\n";
-	conn_sock.Send(response.data(), response.size());
-	
-	/*std::cout << "server sending connection message to player\n";
-	listen_sock->SendAll(response.data(), response.size());*/
-
-	/*if (msg_str == "ready") {
+	if (msg_str == "ready") {
 		std::cout << "server sending connection message to player\n";
 		conn_sock.Send(response.data(), response.size());
 		std::cout << "nothing wrong with send\n";
-	}*/
+	}
 
 	// Successful back-and-forth -- ask caller to keep looping.
 	return true;

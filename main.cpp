@@ -22,7 +22,11 @@ SDL_Rect rect;
 SDL_Renderer* renderer;
 bool bothPlayersIn = false;
 
-void StartRender();
+void GameRender();
+void PlayerInput();
+void MovePlayer();
+
+Player player;
 
 void fatal(bool check, const char* msg) {
     if (check) {
@@ -208,25 +212,20 @@ int main(int argc, char* argv[]) {
     SockLibInit();
     atexit(SockLibShutdown);
 
-    if (argc > 1) {
-        //run server
-        std::cout << "running server\n";
+    //if (argc > 1) {
+    //    //run server
+    //    std::cout << "running server\n";
 
-        Server server;
-        server.Init();
-        server.RunServer();
-        
-    }
-    else {
-        //run client
-        std::cout << "running client\n";
-
-        Player player;
-        player.Init();
-    }
-
-    Player player;
-    player.Init();
+    //    Server server;
+    //    server.Init();
+    //    server.RunServer();
+    //    
+    //}
+    //else {
+    //    //run client
+    //    std::cout << "running client\n";
+    //    player.Init();
+    //}
 
     SDL_Init(SDL_INIT_EVERYTHING);
     if (TTF_Init() == -1) {
@@ -236,7 +235,7 @@ int main(int argc, char* argv[]) {
     TTF_Font* font = TTF_OpenFont("Carlito-Regular.ttf", 18);
     SDL_Window* window;
 
-    fatal(SDL_CreateWindowAndRenderer(640, 480, 0, &window, &renderer) != 0, "CreateWindow");
+    fatal(SDL_CreateWindowAndRenderer(1280, 960, 0, &window, &renderer) != 0, "CreateWindow");
 
     Uint64 last_frame = SDL_GetTicks64();
     float target_dt = 1 / 60.f;
@@ -289,25 +288,17 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        messageHolder.Update(dt);
-
-        SDL_SetRenderDrawColor(renderer, 0, 255, 255, SDL_ALPHA_OPAQUE);
-        SDL_RenderClear(renderer);
-
-        SDL_Color fg = { 0, 0, 0, SDL_ALPHA_OPAQUE };
-        RenderText(renderer, font, fg, messageHolder.GetCurrentMessage(), 10, 480 - 26);
-
         //Render function here /////////////////////////////////////////
-        player.Update();
-        StartRender();
+        //player.Update();
+        PlayerInput();
+        MovePlayer();
+        GameRender();
 
-        int penY = 0;
+       /* int penY = 0;
         for (const std::string& message : messageLog) {
             RenderText(renderer, font, fg, message.c_str(), 0, penY);
             penY += 18;
-        }
-
-        SDL_RenderPresent(renderer);
+        }*/
 
         last_frame = frame_start;
     }
@@ -337,14 +328,64 @@ void append_message(const std::string& msg, MessageSource src) {
     messageLog.AddMessage(prefix + msg);
 }
 
-void StartRender() {
+void GameRender() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //BACKGROUND
+    SDL_RenderClear(renderer);
+
     SDL_Rect rect;
+    rect.x = player.position.x;
+    rect.y = player.position.y;
+    rect.w = 20;
+    rect.h = 20;
 
-    rect.x = 40;
-    rect.y = 40;
-    rect.w = 500;
-    rect.h = 500;
-
-    SDL_SetRenderDrawColor(renderer, 0.4, 155, 0, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
     SDL_RenderFillRect(renderer, &rect);
+
+    SDL_RenderPresent(renderer);
+}
+
+void PlayerInput() {
+
+    //add all inputs if there is something
+    char lastKeyPress = getch();
+
+    if (lastKeyPress == 'w') {
+        cout << "last key as W\n";
+        player.changeY = -1;
+    }
+
+    if (lastKeyPress == 's') {
+        cout << "last key as S\n";
+        player.changeY = 1;
+    }
+
+    //if neither
+    if (lastKeyPress != 's' && lastKeyPress != 'w') {
+        player.changeY = 0;
+    }
+
+    if (lastKeyPress == 'a') {
+        cout << "last key as A\n";
+        player.changeX = -1;
+    }
+
+    if (lastKeyPress == 'd') {
+        cout << "last key as D\n";
+        player.changeX = 1;
+    }
+
+    //if neither
+    if (lastKeyPress != 'a' && lastKeyPress != 'd') {
+        player.changeX = 0;
+    }
+}
+
+void MovePlayer() {
+    if (player.changeX != 0) {
+        player.position.x += player.changeX * player.moveSpeed;
+    }
+
+    if (player.changeY != 0) {
+        player.position.y += player.changeY * player.moveSpeed;
+    }
 }
